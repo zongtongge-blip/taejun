@@ -3,161 +3,94 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>이태준 대리운전 이력서</title>
+  <title>2026 학사일정 대시보드</title>
   <link rel="stylesheet" href="style.css">
-  <script>
-    (function () {
-      var saved = localStorage.getItem("theme");
-      if (saved === "dark") {
-        document.documentElement.setAttribute("data-theme", "dark");
-      }
-    })();
-  </script>
 </head>
 <body>
-  <div class="theme-wrap">
-    <button type="button" id="theme-toggle" class="theme-toggle">다크 모드</button>
-    <p class="sub-translation" id="theme-toggle-translation">(深色模式 / Dark Mode)</p>
-  </div>
+  <header class="site-header">
+    <div>
+      <p class="eyebrow">Academic Calendar Dashboard</p>
+      <h1>2026 학사일정 대시보드</h1>
+      <p class="lead">스프레드시트 일정 데이터를 한눈에 확인할 수 있도록 진행 상태, 월별 밀도, 타임라인 중심으로 정리했습니다.</p>
+    </div>
+    <div class="source-card">
+      <span>기준일</span>
+      <strong id="today-label">-</strong>
+      <p>Source: Google Sheets 2026_학사일정.xlsx</p>
+    </div>
+  </header>
 
-  <main>
-    <section class="scroll-stage" aria-label="2.5D 명함 소개">
-      <div class="stage-sticky">
-        <p class="eyebrow">Designated Driver Resume</p>
-        <h1>이태준</h1>
-        <p class="hero-copy">스크롤을 내리면 명함이 뒤집히고, 뒷면이 이력서 페이지로 확장됩니다.</p>
+  <main class="dashboard">
+    <section class="summary-grid" aria-label="학사일정 요약" id="summary-grid"></section>
 
-        <div class="scene" aria-hidden="true">
-          <article class="business-card" id="business-card">
-            <div class="card-face card-front">
-              <div>
-                <p class="card-label">Applicant</p>
-                <h2>이태준</h2>
-                <p>대리운전 기사 지원자</p>
-              </div>
-              <p class="card-summary">안전 운전과 책임감을 중시합니다.</p>
-              <span class="card-chip">Safe Drive</span>
-            </div>
-
-            <div class="card-face card-back">
-              <p class="card-label">Contact</p>
-              <h2>Driver Resume</h2>
-              <dl>
-                <div>
-                  <dt>Phone</dt>
-                  <dd>010-110-1100</dd>
-                </div>
-                <div>
-                  <dt>Email</dt>
-                  <dd>zongtongge@gachon.ac.kr</dd>
-                </div>
-              </dl>
-              <ul class="mini-tags">
-                <li>안전 운전</li>
-                <li>시간 준수</li>
-                <li>고객 차량 보호</li>
-              </ul>
-            </div>
-          </article>
+    <section class="focus-grid">
+      <article class="panel panel-large">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Now</p>
+            <h2>지금 확인할 일정</h2>
+          </div>
+          <span class="pill active">오늘 기준</span>
         </div>
+        <div id="active-events" class="active-events"></div>
+      </article>
 
-        <p class="scroll-guide">아래로 스크롤하세요</p>
-      </div>
+      <article class="panel">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Priority</p>
+            <h2>긴 일정 우선순위</h2>
+          </div>
+        </div>
+        <div id="long-events" class="stack-list"></div>
+      </article>
     </section>
 
-    <section class="resume-detail" id="resume-detail">
-      <header class="detail-hero">
-        <p class="eyebrow">Resume Details</p>
-        <h2>대리운전 기사 지원 이력서</h2>
-        <p>안전하고 편안한 이동을 제공하는 운전기사를 목표로 합니다.</p>
-      </header>
-
-      <section class="detail-section">
-        <h3>기본 정보</h3>
-        <p class="sub-translation">(基本資訊 / Basic Information)</p>
-        <div class="info-grid">
+    <section class="analytics-grid">
+      <article class="panel">
+        <div class="panel-header">
           <div>
-            <span>이름</span>
-            <strong>이태준</strong>
-            <p class="sub-translation">(姓名：李泰俊 / Name: Lee Tae-jun)</p>
-          </div>
-          <div>
-            <span>연락처</span>
-            <strong>010-110-1100</strong>
-            <p class="sub-translation">(聯絡方式 / Contact)</p>
-          </div>
-          <div>
-            <span>이메일</span>
-            <strong>zongtongge@gachon.ac.kr</strong>
-            <p class="sub-translation">(電子郵件 / Email)</p>
+            <p class="eyebrow">Monthly Density</p>
+            <h2>월별 일정 밀도</h2>
           </div>
         </div>
-      </section>
+        <p class="helper">일정 기간을 월별 일수로 나누어 합산했습니다.</p>
+        <div id="month-chart" class="bar-chart" aria-label="월별 일정 일수 막대 그래프"></div>
+      </article>
 
-      <section class="detail-section">
-        <h3>학력</h3>
-        <p class="sub-translation">(學歷 / Education)</p>
-        <p>가천대학교 재학 (2026년 8월 졸업 예정)</p>
-        <p class="sub-translation">(嘉泉大學在讀，預計2026年8月畢業 / Currently at Gachon University, graduating August 2026)</p>
-      </section>
+      <article class="panel">
+        <div class="panel-header">
+          <div>
+            <p class="eyebrow">Timeline</p>
+            <h2>기간 타임라인</h2>
+          </div>
+        </div>
+        <p class="helper">전체 일정 범위를 같은 축에 배치했습니다. 진한 막대는 진행 중인 일정입니다.</p>
+        <div id="timeline" class="timeline"></div>
+      </article>
+    </section>
 
-      <section class="detail-section">
-        <h3>자기소개</h3>
-        <p class="sub-translation">(自我介紹 / Self-Introduction)</p>
-        <p>안녕하세요. 운전면허를 보유하고 있으며, 고객님 차량을 안전하게 모셔 드리는 일에 관심이 있어 지원하게 되었습니다. 맡은 일은 끝까지 책임지는 성격입니다.</p>
-        <p class="sub-translation">(您好。我持有駕照，對安全接送客戶車輛的工作很感興趣，因此前來應徵。我做事負責，會堅持到底。 / Hello. I hold a driver's license and am applying because I am interested in safely driving customers' vehicles. I am responsible and see tasks through to the end.)</p>
-      </section>
-
-      <section class="detail-section">
-        <h3>지원 동기</h3>
-        <p class="sub-translation">(申請動機 / Reason for Applying)</p>
-        <p>가천대학교 재학 중이며, 학업과 병행할 수 있는 유연한 근무 형태에 매력을 느껴 대리운전 기사로 지원했습니다. 운전 중 고객님과의 소통을 중요하게 생각하며, 안전하게 목적지까지 모셔 드리고 싶습니다.</p>
-        <p class="sub-translation">(我目前就讀嘉泉大學，被能與學業並行的彈性工作形式所吸引，因此應徵代駕司機。我重視行車過程中與客戶的溝通，希望能安全地將客戶送達目的地。 / I am currently studying at Gachon University and applied as a designated driver because I am attracted to the flexible work schedule that allows me to balance school. I value communication with customers while driving and want to safely take them to their destinations.)</p>
-      </section>
-
-      <section class="detail-section">
-        <h3>강점</h3>
-        <p class="sub-translation">(優點 / Strengths)</p>
-        <ul class="resume-list">
-          <li>
-            <strong>방어 운전</strong>
-            <span>교통 법규를 지키며 방어 운전을 습관화하고 있습니다.</span>
-            <p class="sub-translation">(遵守交通法規，並養成防禦性駕駛的習慣。 / I follow traffic laws and practice defensive driving as a habit.)</p>
-          </li>
-          <li>
-            <strong>시간 준수</strong>
-            <span>약속과 일정을 지키는 것을 중요하게 생각합니다.</span>
-            <p class="sub-translation">(我重視遵守約定與時間安排。 / I place great importance on keeping appointments and schedules.)</p>
-          </li>
-          <li>
-            <strong>차량 보호</strong>
-            <span>고객님 차량을 내 차처럼 조심스럽게 다룹니다.</span>
-            <p class="sub-translation">(我會像對待自己的車一樣小心地對待客戶的車輛。 / I handle customers' vehicles as carefully as my own.)</p>
-          </li>
-        </ul>
-      </section>
-
-      <section class="detail-section">
-        <h3>경험 및 활동</h3>
-        <p class="sub-translation">(經歷與活動 / Experience &amp; Activities)</p>
-        <ul class="resume-list">
-          <li>운전면허(2종 보통) 보유, 취득 후 가족 차량으로 꾸준히 운전 연습</li>
-          <li>교통사고 및 음주운전 이력 없음</li>
-          <li>근무 가능 시간: 평일 저녁, 주말, 방학 기간</li>
-        </ul>
-      </section>
-
-      <section class="detail-section">
-        <h3>포부</h3>
-        <p class="sub-translation">(抱負 / Aspirations)</p>
-        <p>입사 후 교육과 매뉴얼을 성실히 따르며, 고객님께 안전하고 편안한 이동을 제공하는 기사가 되겠습니다. 장기적으로 회사와 함께 성장하며 믿을 수 있는 운전기사가 되고 싶습니다.</p>
-        <p class="sub-translation">(入職後我會認真遵守教育訓練與作業規範，成為能為客戶提供安全、舒適出行服務的司機。長期而言，我希望與公司共同成長，成為值得信賴的駕駛員。 / After joining, I will diligently follow training and guidelines to become a driver who provides safe and comfortable rides for customers. In the long term, I hope to grow with the company and become a trustworthy driver.)</p>
-      </section>
-
-      <footer class="detail-footer">
-        <p>감사합니다.</p>
-        <p class="sub-translation">(謝謝。 / Thank you.)</p>
-      </footer>
+    <section class="panel">
+      <div class="table-tools">
+        <div>
+          <p class="eyebrow">Schedule Table</p>
+          <h2>전체 일정표</h2>
+        </div>
+        <div class="filters" id="filters" aria-label="상태 필터"></div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>일정</th>
+              <th>기간</th>
+              <th>일수</th>
+              <th>상태</th>
+            </tr>
+          </thead>
+          <tbody id="schedule-body"></tbody>
+        </table>
+      </div>
     </section>
   </main>
 
